@@ -120,9 +120,16 @@ change sur un profil). **Non implémenté dans ce repo** — tâche séparée.
 `articles_published.content` est du HTML brut généré par un LLM
 (OpenRouter, côté letslink-promo), relu par un admin mais jamais sanitisé
 dans le pipeline promo. Le composant `components/articles/article-content.tsx`
-sanitise avec `isomorphic-dompurify` juste avant `dangerouslySetInnerHTML` —
-ne jamais injecter `article.content` ailleurs sans repasser par ce
-composant (ou par `DOMPurify.sanitize()` directement).
+sanitise avec `sanitize-html` juste avant `dangerouslySetInnerHTML` — ne
+jamais injecter `article.content` ailleurs sans repasser par ce composant.
+
+**Ne jamais utiliser `isomorphic-dompurify`/`jsdom` côté serveur ici** :
+jsdom lit des fichiers CSS internes sur le disque à l'exécution, ce que le
+file-tracing serverless de Vercel n'embarque pas dans le bundle d'une
+route. Résultat : 500 silencieux sur toute page rendue à la demande (donc
+tout article publié après le dernier build, via le fallback ISR) alors que
+tout fonctionne en local et sur les pages déjà pré-générées au build. Déjà
+rencontré une fois — voir historique du composant.
 
 ---
 
