@@ -1,0 +1,29 @@
+# Let's Link Blog
+
+> Blog des artistes indépendants suisses accompagnés par Let's Link
+> (letslink.ch). Chaque article couvre la sortie musicale d'un artiste
+> indépendant (single, EP, album) : contexte, liens d'écoute officiels,
+> et informations sur l'artiste.
+
+Let's Link est une plateforme suisse qui aide les artistes indépendants à
+promouvoir leur musique et à se professionnaliser, sans intermédiaire
+inutile. Ce blog est la vitrine publique des sorties de ces artistes.
+
+## Structure du site
+
+- `/{lang}` — accueil : derniers articles publiés + liste des artistes
+  (langues disponibles : en, fr, de, it)
+- `/{lang}/{artiste}` — page profil d'un artiste : bio, réseaux, discographie
+- `/{lang}/{artiste}/{article}` — article de blog dédié à une sortie
+  musicale, avec liens d'écoute officiels (Spotify, Apple Music, etc.)
+
+## Découverte
+
+- Sitemap complet (tous les artistes et articles, avec alternates
+  multilingues) : /sitemap.xml
+- Chaque article expose des données structurées JSON-LD (schema.org
+  `Article`, `MusicGroup`, `BreadcrumbList`) directement dans le HTML.
+
+## Contact
+
+Site principal : https://letslink.ch — info@letslink.ch
