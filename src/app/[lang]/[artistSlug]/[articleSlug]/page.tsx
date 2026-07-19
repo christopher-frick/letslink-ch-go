@@ -7,8 +7,11 @@ import {
   getArticleBySlug,
   getArticleUrlArtistSlug,
   getAllArticlesForStaticParams,
+  getSiblingTranslations,
+  type ArticlePublished,
 } from "@/lib/queries/articles";
 import { ArticleContent } from "@/components/articles/article-content";
+import { SetLangAlternates, type LangAlternates } from "@/components/layout/lang-alternates";
 import {
   absoluteUrl,
   articlePath,
@@ -16,6 +19,14 @@ import {
   buildArticleJsonLd,
   buildBreadcrumbJsonLd,
 } from "@/lib/seo";
+
+// Construit la map langue → chemin relatif à partir des traductions sœurs
+// (même article_id) — chaque traduction a son propre slug, donc c'est la
+// seule façon fiable de savoir vers quelle URL naviguer par langue.
+async function resolveLangAlternates(article: ArticlePublished): Promise<LangAlternates> {
+  const siblings = await getSiblingTranslations(article.article_id);
+  return Object.fromEntries(siblings.map((sibling) => [sibling.language, articlePath(sibling)]));
+}
 
 export const revalidate = 86400; // fallback temporisé — voir /api/revalidate pour le on-demand
 
@@ -45,11 +56,17 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const url = absoluteUrl(articlePath(article));
   const title = article.seo_meta_title ?? article.title;
   const description = article.seo_meta_desc ?? undefined;
+  const langAlternates = await resolveLangAlternates(article);
 
   return {
     title,
     description,
-    alternates: { canonical: url },
+    alternates: {
+      canonical: url,
+      languages: Object.fromEntries(
+        Object.entries(langAlternates).map(([l, path]) => [l, absoluteUrl(path)])
+      ),
+    },
     openGraph: {
       url,
       type: "article",
@@ -89,8 +106,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     ]),
   ];
 
+  const langAlternates = await resolveLangAlternates(article);
+
   return (
     <article className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
+      <SetLangAlternates alternates={langAlternates} />
       {jsonLd.map((ld, i) => (
         <script
           key={i}

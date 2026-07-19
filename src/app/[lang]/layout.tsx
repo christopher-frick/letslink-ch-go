@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { LangAlternatesProvider } from "@/components/layout/lang-alternates";
 import { LANGS, isLang, type Lang } from "@/lib/i18n";
 import { absoluteUrl } from "@/lib/seo";
 import "@/app/globals.css";
@@ -63,13 +64,15 @@ export default async function LangLayout({ children, params }: LangLayoutProps) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(buildWebsiteJsonLd(lang)) }}
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <TooltipProvider>
-            <div className="flex min-h-screen flex-col">
-              <SiteHeader lang={lang} />
-              <main className="flex-1">{children}</main>
-              <SiteFooter lang={lang} />
-            </div>
-          </TooltipProvider>
+          <LangAlternatesProvider>
+            <TooltipProvider>
+              <div className="flex min-h-screen flex-col">
+                <SiteHeader lang={lang} />
+                <main className="flex-1">{children}</main>
+                <SiteFooter lang={lang} />
+              </div>
+            </TooltipProvider>
+          </LangAlternatesProvider>
         </ThemeProvider>
       </body>
     </html>

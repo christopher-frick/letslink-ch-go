@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { supabase } from "@/lib/supabase";
 import type { Lang } from "@/lib/i18n";
 import { slugify } from "@/lib/slugify";
@@ -102,7 +103,9 @@ export async function listArticles({
   };
 }
 
-export async function getArticleBySlug(
+// cache() dédupe l'appel entre generateMetadata et le composant de page
+// (tous deux appelés pour la même requête App Router).
+export const getArticleBySlug = cache(async function getArticleBySlug(
   slug: string,
   lang: Lang
 ): Promise<ArticlePublished | null> {
@@ -115,7 +118,23 @@ export async function getArticleBySlug(
 
   if (error) throw error;
   return data as unknown as ArticlePublished | null;
-}
+});
+
+// Traductions sœurs d'un article (même article_id, une ligne par langue
+// publiée) — utilisé pour construire les vraies URLs alternates par langue
+// (le slug change par traduction, donc un simple remplacement du segment
+// /{lang}/ dans l'URL pointe vers un slug inexistant dans l'autre langue).
+export const getSiblingTranslations = cache(async function getSiblingTranslations(
+  articleId: string
+): Promise<Pick<ArticlePublished, "language" | "slug" | "profile_slug" | "artist_name">[]> {
+  const { data, error } = await supabase
+    .from("articles_published")
+    .select("language, slug, profile_slug, artist_name")
+    .eq("article_id", articleId);
+
+  if (error) throw error;
+  return data ?? [];
+});
 
 // Segment [artistSlug] de l'URL d'un article : le profile_slug quand
 // l'artiste a un profil public, sinon un slug dérivé du nom d'artiste
