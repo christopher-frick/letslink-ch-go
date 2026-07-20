@@ -1,18 +1,17 @@
 import type { Metadata } from "next";
 import type { WebSite, WithContext } from "schema-dts";
 import { notFound } from "next/navigation";
-import { ThemeProvider } from "next-themes";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { LangAlternatesProvider } from "@/components/layout/lang-alternates";
+import { LangHtmlAttribute } from "@/components/layout/lang-html-attribute";
 import { LANGS, isLang, type Lang } from "@/lib/i18n";
 import { absoluteUrl } from "@/lib/seo";
-import "@/app/globals.css";
 
-// Ce layout est le layout racine de l'app : il définit <html>/<body> pour
-// toutes les pages (le blog n'a pas de page hors du segment [lang]), ce qui
-// est le pattern standard Next.js App Router pour l'i18n par préfixe de route.
+// Layout imbriqué (pas de <html>/<body> ici — c'est app/layout.tsx, le vrai
+// root, qui les porte ; voir CLAUDE.md pour pourquoi un seul endroit doit
+// les déclarer).
 
 export function generateStaticParams() {
   return LANGS.map((lang) => ({ lang }));
@@ -57,24 +56,21 @@ export default async function LangLayout({ children, params }: LangLayoutProps) 
   if (!isLang(lang)) notFound();
 
   return (
-    <html lang={lang} suppressHydrationWarning>
-      <body className="min-h-screen bg-background font-sans antialiased">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildWebsiteJsonLd(lang)) }}
-        />
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <LangAlternatesProvider>
-            <TooltipProvider>
-              <div className="flex min-h-screen flex-col">
-                <SiteHeader lang={lang} />
-                <main className="flex-1">{children}</main>
-                <SiteFooter lang={lang} />
-              </div>
-            </TooltipProvider>
-          </LangAlternatesProvider>
-        </ThemeProvider>
-      </body>
-    </html>
+    <>
+      <LangHtmlAttribute lang={lang} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildWebsiteJsonLd(lang)) }}
+      />
+      <LangAlternatesProvider>
+        <TooltipProvider>
+          <div className="flex min-h-screen flex-col">
+            <SiteHeader lang={lang} />
+            <main className="flex-1">{children}</main>
+            <SiteFooter lang={lang} />
+          </div>
+        </TooltipProvider>
+      </LangAlternatesProvider>
+    </>
   );
 }
