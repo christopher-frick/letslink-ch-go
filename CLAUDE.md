@@ -108,10 +108,12 @@ Content-Type: application/json
 { "articleSlug"?: string, "artistSlug"?: string }
 ```
 
-Au moins un des deux champs requis. À appeler dans le flux de publication de
-letslink-promo (`api/publish/route.ts` ou `api/moderation/[id]/route.ts`,
-quand une traduction passe `published`, ou quand `is_profile_public`/`slug`
-change sur un profil). **Non implémenté dans ce repo** — tâche séparée.
+Au moins un des deux champs requis. Appelé côté `letslink-promo` dans
+`api/publish/route.ts` à chaque traduction publiée (`articleSlug` +
+`artistSlug` si le profil de la commande est public). **Pas encore appelé**
+quand `is_profile_public`/`slug` change sur un profil sans nouvelle
+publication d'article (`api/profile/[id]/route.ts` côté letslink-promo) —
+dans ce cas la page artiste reste sur le fallback 24h.
 
 ---
 
