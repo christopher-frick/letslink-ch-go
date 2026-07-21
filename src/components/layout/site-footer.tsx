@@ -20,6 +20,14 @@ export function SiteFooter({ lang }: { lang: Lang }) {
         <Link href={`/${lang}`} className="hover:text-foreground hover:underline">
           Voir tous les articles
         </Link>
+        <a
+          href="https://letslink.ch/privacy"
+          className="hover:text-foreground hover:underline"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Politique de confidentialité
+        </a>
       </div>
     </footer>
   );
