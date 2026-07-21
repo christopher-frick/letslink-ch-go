@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
+import { OpenPanelComponent } from "@openpanel/nextjs";
 import "@/app/globals.css";
 
 // Root layout unique : seul endroit qui déclare <html>/<body> dans toute
@@ -23,6 +24,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr" suppressHydrationWarning>
       <body className="min-h-screen bg-background font-sans antialiased">
+        {process.env.NEXT_PUBLIC_OPENPANEL_CLIENT_ID && (
+          <OpenPanelComponent
+            clientId={process.env.NEXT_PUBLIC_OPENPANEL_CLIENT_ID}
+            apiUrl="https://opapi-i1w5z5frgrckeko9z0cdnw0m.letslink.ch/"
+            trackScreenViews={true}
+            trackOutgoingLinks={true}
+            trackAttributes={true}
+          />
+        )}
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
         </ThemeProvider>

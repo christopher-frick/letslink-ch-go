@@ -20,6 +20,7 @@ lecture seule : aucune écriture en DB, aucune authentification.
 | Package mgr  | pnpm                                                           |
 | Data         | `@supabase/supabase-js` — client **anon, lecture seule uniquement** |
 | Thème        | `next-themes` (adaptatif light/dark, pas dark-only)            |
+| Analytics    | OpenPanel self-hosted (`OpenPanelComponent`, cookieless)       |
 | Déploiement  | Vercel                                                         |
 
 Commandes :
@@ -39,6 +40,10 @@ NEXT_PUBLIC_SUPABASE_URL=https://supabasekong-xrdm99qdk0ya5oqyw45gb00k.letslink.
 NEXT_PUBLIC_SUPABASE_ANON_KEY=       # même valeur que letslink-promo/.env.local (même projet Supabase)
 NEXT_PUBLIC_APP_URL=https://go.letslink.ch
 BLOG_REVALIDATE_SECRET=              # secret partagé avec letslink-promo, voir contrat ci-dessous
+
+NEXT_PUBLIC_OPENPANEL_CLIENT_ID=     # OpenPanel — analytics self-hosted, cookieless (composant client)
+OPENPANEL_CLIENT_ID=                 # idem, lu côté serveur (src/lib/openpanel.ts)
+OPENPANEL_CLIENT_SECRET=             # secret, jamais committé — tracking serveur uniquement
 ```
 
 Voir `.env.example`. Ce site ne lit que deux vues publiques Supabase :
