@@ -1,4 +1,4 @@
-import type { Article, MusicGroup, Person, WithContext, BreadcrumbList } from "schema-dts";
+import type { Article, MusicGroup, MusicRecording, MusicAlbum, Person, WithContext, BreadcrumbList } from "schema-dts";
 import type { ArticlePublished } from "@/lib/queries/articles";
 import type { ArtistPublic } from "@/lib/queries/artists";
 import { getArticleUrlArtistSlug } from "@/lib/queries/articles";
@@ -76,6 +76,26 @@ export function buildArticleJsonLd(article: ArticlePublished): WithContext<Artic
       name: "Let's Link",
       url: "https://letslink.ch",
     },
+  };
+}
+
+// MusicAlbum pour EP/album/mixtape (plusieurs pistes), MusicRecording pour un single —
+// même distinction que promo.orders.release_type côté letslink-promo.
+export function buildReleaseJsonLd(article: ArticlePublished): WithContext<MusicRecording | MusicAlbum> {
+  const isMultiTrack = ["ep", "album", "mixtape"].includes(article.release_type);
+  const sameAs = (article.streaming_links ?? []).map((link) => link.url);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": isMultiTrack ? "MusicAlbum" : "MusicRecording",
+    name: article.release_title,
+    datePublished: article.release_date ?? undefined,
+    genre: article.genre ?? undefined,
+    byArtist: {
+      "@type": "MusicGroup",
+      name: article.artist_name,
+    },
+    sameAs: sameAs.length > 0 ? sameAs : undefined,
   };
 }
 

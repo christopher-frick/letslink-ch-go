@@ -21,8 +21,10 @@ inutile. Ce blog est la vitrine publique des sorties de ces artistes.
 
 - Sitemap complet (tous les artistes et articles, avec alternates
   multilingues) : /sitemap.xml
+- Flux RSS par langue : /{lang}/feed.xml (en, fr, de, it)
 - Chaque article expose des données structurées JSON-LD (schema.org
-  `Article`, `MusicGroup`, `BreadcrumbList`) directement dans le HTML.
+  `Article`, `MusicRecording`/`MusicAlbum`, `MusicGroup`, `BreadcrumbList`)
+  directement dans le HTML.
 
 ## Contact
 
