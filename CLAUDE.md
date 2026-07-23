@@ -95,6 +95,9 @@ recherche/filtres n'oblige pas à retoucher cette couche.
 
 ## Rendu & revalidation (ISR)
 
+> Vue d'ensemble bidirectionnelle (schéma, angles morts, variables partagées) :
+> `letslink-promo/docs/blog-sync.md` — ce qui suit est le détail côté blog.
+
 - Pages artiste/article : `generateStaticParams` + `export const revalidate = 86400`
   (fallback 24h).
 - Home (`/{lang}`) : rendue dynamiquement (lecture de `searchParams` pour la

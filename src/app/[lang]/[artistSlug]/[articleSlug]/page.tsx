@@ -13,6 +13,7 @@ import {
 } from "@/lib/queries/articles";
 import { ArticleCard } from "@/components/articles/article-card";
 import { ArticleContent } from "@/components/articles/article-content";
+import { StreamingLinks } from "@/components/articles/streaming-links";
 import { SetLangAlternates, type LangAlternates } from "@/components/layout/lang-alternates";
 import {
   absoluteUrl,
@@ -199,14 +200,23 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
         ) : null}
 
+        {article.streaming_links && article.streaming_links.length > 0 ? (
+          <div className="mb-8">
+            <StreamingLinks links={article.streaming_links} title="Écouter sur" />
+          </div>
+        ) : null}
+
         {article.spotify_embed ? (
-          <iframe
-            title="Spotify"
-            src={article.spotify_embed}
-            className="mb-8 h-[152px] w-full rounded-lg"
-            loading="lazy"
-            allow="encrypted-media"
-          />
+          <div className="mb-8 space-y-3">
+            <h2 className="text-lg font-semibold">Écouter maintenant</h2>
+            <iframe
+              title="Spotify"
+              src={article.spotify_embed}
+              className="h-[152px] w-full rounded-lg"
+              loading="lazy"
+              allow="encrypted-media"
+            />
+          </div>
         ) : null}
 
         {article.youtube_clip_id ? (
@@ -223,22 +233,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         ) : null}
 
         <ArticleContent html={article.content} />
-
-        {article.streaming_links && article.streaming_links.length > 0 ? (
-          <div className="mt-10 flex flex-wrap gap-2 border-t pt-6">
-            {article.streaming_links.map((link) => (
-              <a
-                key={link.url}
-                href={link.url}
-                target="_blank"
-                rel="noopener"
-                className="rounded-full border px-4 py-1.5 text-sm hover:bg-accent"
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
-        ) : null}
 
         {otherArticles.length > 0 ? (
           <div className="mt-12 border-t pt-8">
